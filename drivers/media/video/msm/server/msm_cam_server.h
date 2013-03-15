@@ -17,7 +17,7 @@
 #include <linux/proc_fs.h>
 #include <linux/ioctl.h>
 #include <mach/camera.h>
-#include "msm.h"
+#include "../msm.h"
 
 uint32_t msm_cam_server_get_mctl_handle(void);
 struct msm_cam_media_controller *msm_cam_server_get_mctl(uint32_t handle);
@@ -38,7 +38,7 @@ int32_t msm_find_free_queue(void);
 int msm_server_proc_ctrl_cmd(struct msm_cam_v4l2_device *pcam,
 	struct msm_camera_v4l2_ioctl_t *ioctl_ptr, int is_set_cmd);
 int msm_server_s_ctrl(struct msm_cam_v4l2_device *pcam,
-	struct v4l2_control *ctrl);
+    struct v4l2_control *ctrl);
 int msm_server_g_ctrl(struct msm_cam_v4l2_device *pcam,
 	struct v4l2_control *ctrl);
 int msm_server_q_ctrl(struct msm_cam_v4l2_device *pcam,
