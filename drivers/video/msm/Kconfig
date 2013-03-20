@@ -292,6 +292,11 @@ config FB_MSM_LCDC_SAMSUNG_OLED_PT
 	select FB_MSM_LCDC_PANEL
 	default n
 
+config FB_MSM_LCDC_LG_XGA
+	bool
+	select FB_MSM_LCDC_PANEL
+	default n
+
 config FB_MSM_LCDC_NT35582_WVGA
 	bool
 	select FB_MSM_LCDC_PANEL
@@ -508,6 +513,13 @@ config FB_MSM_LCDC_SAMSUNG_OLED_PT_PANEL
 	---help---
 	  Support for LCDC Samsung OLED PT (480x800) panel
 
+config FB_MSM_LCDC_LG_XGA_PANEL
+    depends on FB_MSM_LCDC_HW
+    bool "LCDC LG XGA Panel"
+    select FB_MSM_LCDC_LG_XGA
+    ---help---
+      Support for LCDC LG XGA (1024x768) panel
+
 config FB_MSM_LVDS_CHIMEI_WXGA_PANEL
         bool "LVDS Chimei WXGA Panel"
         select FB_MSM_LVDS_CHIMEI_WXGA
@@ -573,6 +585,7 @@ config FB_MSM_LCDC_PANEL_AUTO_DETECT
 	select FB_MSM_LCDC_AUO_WVGA
 	select FB_MSM_LCDC_NT35582_WVGA
 	select FB_MSM_LCDC_SAMSUNG_OLED_PT
+    select FB_MSM_LCDC_LG_XGA
 	---help---
 	  Support for LCDC panel auto detect
 
@@ -582,6 +595,7 @@ config FB_MSM_LCDC_MIPI_PANEL_AUTO_DETECT
 	select FB_MSM_LCDC_SAMSUNG_WSVGA
 	select FB_MSM_LCDC_AUO_WVGA
 	select FB_MSM_LCDC_SAMSUNG_OLED_PT
+    select FB_MSM_LCDC_LG_XGA
 	select FB_MSM_LCDC_NT35582_WVGA
 	select FB_MSM_LCDC_TOSHIBA_FWVGA_PT
 	select FB_MSM_MIPI_TOSHIBA_VIDEO_WVGA_PT
