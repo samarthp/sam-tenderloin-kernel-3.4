@@ -17,6 +17,7 @@
 #include <linux/i2c.h>
 #include <linux/uaccess.h>
 #include <linux/miscdevice.h>
+#include <linux/module.h>
 #include <media/msm_camera.h>
 #include <mach/gpio.h>
 #include "mt9d113.h"
