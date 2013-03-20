@@ -514,7 +514,7 @@ static inline void mdp4_dtv_wait4vsync(int cndx, long long *vtime)
 {
     /* empty */
 }
-static inline void mdp4_dtv_vsync_ctrl(int cndx, long long *vtime)
+static inline void mdp4_dtv_vsync_ctrl(int cndx, int enable)
 {
     /* empty */
 }
@@ -526,9 +526,17 @@ static inline void mdp4_dtv_overlay_blt_stop(struct msm_fb_data_type *mfd)
 {
 	return;
 }
-static inline void mdp4_dtv_base_swap(struct mdp4_overlay_pipe *pipe)
+static inline void mdp4_dtv_base_swap(int cndx, struct mdp4_overlay_pipe *pipe)
 {
 	/* empty */
+}
+static inline void mdp4_overlay_dtv_set_perf(struct msm_fb_data_type *mfd)
+{
+	return;
+}
+static inline void mdp4_dtv_pipe_queue(int cndx, struct mdp4_overlay_pipe *pipe)
+{
+    return;
 }
 #endif /* CONFIG_FB_MSM_DTV */
 
