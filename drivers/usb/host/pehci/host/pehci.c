@@ -1,25 +1,25 @@
-/* 
-* Copyright (C) ST-Ericsson AP Pte Ltd 2010 
+/*
+* Copyright (C) ST-Ericsson AP Pte Ltd 2010
 *
 * ISP1763 Linux OTG Controller driver : host
-* 
-* This program is free software; you can redistribute it and/or modify it under the terms of 
-* the GNU General Public License as published by the Free Software Foundation; version 
-* 2 of the License. 
-* 
-* This program is distributed in the hope that it will be useful, but WITHOUT ANY  
-* WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS  
-* FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more  
-* details. 
-* 
-* You should have received a copy of the GNU General Public License 
-* along with this program; if not, write to the Free Software 
-* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA. 
-* 
+*
+* This program is free software; you can redistribute it and/or modify it under the terms of
+* the GNU General Public License as published by the Free Software Foundation; version
+* 2 of the License.
+*
+* This program is distributed in the hope that it will be useful, but WITHOUT ANY
+* WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+* FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more
+* details.
+*
+* You should have received a copy of the GNU General Public License
+* along with this program; if not, write to the Free Software
+* Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+*
 * Refer to the follwing files in ~/drivers/usb/host for copyright owners:
 * ehci-dbg.c, ehci-hcd.c, ehci-hub.c, ehci-mem.c, ehci-q.c and ehic-sched.c (kernel version 2.6.9)
-* Code is modified for ST-Ericsson product 
-* 
+* Code is modified for ST-Ericsson product
+*
 * Author : wired support <wired.support@stericsson.com>
 *
 */
@@ -183,7 +183,9 @@ struct wake_lock pehci_wake_lock;
  -----------------------------------------------------*/
 
 /* used	when updating hcd data */
-static spinlock_t hcd_data_lock	= SPIN_LOCK_UNLOCKED;
+//static spinlock_t hcd_data_lock	= SPIN_LOCK_UNLOCKED;
+
+DEFINE_SPINLOCK(hcd_data_lock);
 
 static const char hcd_name[] = "ST-Ericsson ISP1763";
 static td_ptd_map_buff_t td_ptd_map_buff[TD_PTD_TOTAL_BUFF_TYPES];	/* td-ptd map buffer for all 1362 buffers */
@@ -243,14 +245,14 @@ pehci_complete_device_removal(phci_hcd * hcd, struct ehci_qh *qh)
 		qh = 0;
 		return;
 	} else {
-	
+
 		if(!list_empty(&qh->qtd_list)){
 				qtd=NULL;
 				qtd = list_entry(qh->qtd_list.next, struct ehci_qtd, qtd_list);
 				if(qtd){
 					urb=qtd->urb;
 					urb_priv= urb->hcpriv;
-					
+
 					if(urb)
 					switch (usb_pipetype(urb->pipe)) {
 						case PIPE_CONTROL:
@@ -287,7 +289,7 @@ pehci_complete_device_removal(phci_hcd * hcd, struct ehci_qh *qh)
 							break;
 					}
 
-					
+
 				}else{
 					//break;
 				}
@@ -473,7 +475,7 @@ pehci_hcd_td_ptd_submit_urb(phci_hcd * hcd, struct ehci_qh *qh,	u8 bufftype)
 					printk("\n");
 #endif
 
-			
+
 
 			break;
 		}
@@ -822,7 +824,7 @@ pehci_hcd_schedule_pending_ptds(phci_hcd * hcd, u16 donemap, u8 bufftype,
 		printk("DW2: 0x%08X\n", qha->td_info3);
 		printk("DW3: 0x%08X\n", qha->td_info4);
 #endif
-		
+
 		/*if this is SETUP/OUT token , then need to write into the buffer */
 		/*length should	be valid */
 		if (qtd->length && (length <= HC_ATL_PL_SIZE)){
@@ -1003,7 +1005,7 @@ pehci_hcd_qtd_schedule(phci_hcd	* hcd, struct ehci_qtd *qtd,
 	/*write	qha into the header of the host	controller */
 	isp1763_mem_write(hcd->dev, td_ptd_map->ptd_header_addr, 0,
 			  (u32 *) (qha), PHCI_QHA_LENGTH, 0);
-	
+
 #if 0 //def PTD_DUMP_SCHEDULE
 		printk("SCHEDULE Next qtd\n");
 		printk("DW0: 0x%08X\n", qha->td_info1);
@@ -1011,7 +1013,7 @@ pehci_hcd_qtd_schedule(phci_hcd	* hcd, struct ehci_qtd *qtd,
 		printk("DW2: 0x%08X\n", qha->td_info3);
 		printk("DW3: 0x%08X\n", qha->td_info4);
 #endif
-	
+
 	/*if this is SETUP/OUT token , then need to write into the buffer */
 	/*length should	be valid */
 	if (qtd->length && (length <= HC_ATL_PL_SIZE)){
@@ -1041,7 +1043,7 @@ pehci_hcd_qtd_schedule(phci_hcd	* hcd, struct ehci_qtd *qtd,
 	pehci_entry("--	%s: Exit\n", __FUNCTION__);
 	return;
 }
-#ifdef USBNET 
+#ifdef USBNET
 
 #if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,24)
 static void
@@ -1058,7 +1060,7 @@ pehci_hcd_urb_delayed_complete(phci_hcd * hcd, struct ehci_qh *qh, struct urb *u
 
 	urb_priv_t *urb_priv = (urb_priv_t *) urb->hcpriv;
 
-#ifdef USBNET 
+#ifdef USBNET
 	struct isp1763_async_cleanup_urb *urb_st = 0;
 #endif
 
@@ -1128,7 +1130,7 @@ pehci_hcd_urb_complete(phci_hcd * hcd, struct ehci_qh *qh, struct urb *urb,
 	static u32 remove = 0;
 	static u32 qh_state = 0;
 	urb_priv_t *urb_priv = (urb_priv_t *) urb->hcpriv;
-	
+
 	if(urb_priv==NULL){
 	printk("***************urb_priv is NULL ************ %s: Entered\n",	__FUNCTION__);
 	goto exit;
@@ -1181,7 +1183,7 @@ pehci_hcd_urb_complete(phci_hcd * hcd, struct ehci_qh *qh, struct urb *urb,
 	spin_lock(&hcd->lock);
 exit:
 	pehci_entry("--	%s: Exit\n", __FUNCTION__);
-	
+
 }
 
 /*update the error status of the td*/
@@ -1244,7 +1246,7 @@ pehci_hcd_update_error_status(u32 ptdstatus, struct urb	*urb)
  *    required actions depending on status.
  *  - Freeing up memory	used by	an ITDs	once it	is not needed anymore.
  ************************************************************************/
-void 
+void
 pehci_hcd_iso_sitd_schedule(phci_hcd *hcd,struct urb* urb,struct ehci_sitd* sitd){
 		td_ptd_map_t *td_ptd_map;
 		td_ptd_map_buff_t *ptd_map_buff;
@@ -1252,13 +1254,13 @@ pehci_hcd_iso_sitd_schedule(phci_hcd *hcd,struct urb* urb,struct ehci_sitd* sitd
 		u32 ormask = 0, skip_map = 0,last_map=0,buff_stat=0;
 		struct isp1763_mem_addr *mem_addr;
 		ptd_map_buff = &(td_ptd_map_buff[TD_PTD_BUFF_TYPE_ISTL]);
-		
+
 		/* Get the PTD allocated for this SITD. */
 		td_ptd_map =
 				&ptd_map_buff->map_list[sitd->
 					sitd_index];
 		iso_ptd = &hcd->isotd;
-		
+
 		memset(iso_ptd, 0,	sizeof(struct _isp1763_isoptd));
 		/* Read buffer status register to check later if the ISO buffer is
 		filled or not */
@@ -1281,14 +1283,14 @@ pehci_hcd_iso_sitd_schedule(phci_hcd *hcd,struct urb* urb,struct ehci_sitd* sitd
 		/* Read the contents of the ISO ormask  register */
 		ormask = isp1763_reg_read16(hcd->dev, hcd->regs.iso_irq_mask_or,
 			ormask);
-		
+
 		/* Create a PTD from an SITD */
 		phcd_iso_sitd_to_ptd(hcd, sitd, sitd->urb,
-				(void *) iso_ptd);	
+				(void *) iso_ptd);
 		/* Indicate that this SITD's PTD have been
 		filled up */
 		ptd_map_buff->pending_ptd_bitmap &=
-			~td_ptd_map->ptd_bitmap;		
+			~td_ptd_map->ptd_bitmap;
 
 				/*
 				 * Place the newly initialized ISO PTD structure into
@@ -1383,9 +1385,9 @@ pehci_hcd_iso_sitd_schedule(phci_hcd *hcd,struct urb* urb,struct ehci_sitd* sitd
 				isp1763_reg_write16(hcd->dev,
 					hcd->regs.buffer_status,
 					(buff_stat | ISO_BUFFER));
-				
+
 				isp1763_reg_write16(hcd->dev, hcd->regs.isotdskipmap,skip_map);
-		
+
 }
 
 /*******************************************************************
@@ -1689,7 +1691,7 @@ pehci_hcd_iso_schedule(phci_hcd * hcd, struct urb *urb)
 					/* switch(PTD_PID(iso_ptd->td_info2)) */
 				}
 
-				
+
 				/* If this is the last td, indicate to
 				complete the URB */
 				if (itd->hw_next == EHCI_LIST_END) {
@@ -1780,7 +1782,7 @@ pehci_hcd_iso_worker(phci_hcd * hcd)
 	struct ehci_sitd *sitd=0, *current_sitd=0;
 	td_ptd_map_t *td_ptd_map;
 	td_ptd_map_buff_t *ptd_map_buff;
-	struct list_head *sitd_itd_remove, *position;// *lst_temp;	
+	struct list_head *sitd_itd_remove, *position;// *lst_temp;
 	struct urb *urb;
 	u8 i = 0;
 	unsigned long startAdd = 0;
@@ -2205,7 +2207,7 @@ pehci_hcd_iso_worker(phci_hcd * hcd)
 					if (!list_empty(&urb->ep->urb_list))
 #endif
 						hcd->periodic_more_urb = 1;
-					
+
 
 #if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,24)
 				usb_hcd_giveback_urb(&hcd->usb_hcd, urb);
@@ -2241,14 +2243,14 @@ pehci_hcd_iso_worker(phci_hcd * hcd)
 					sitd_itd_remove = &qhead->periodic_list.sitd_itd_head;
 					/* find sitd to schedule */
 					list_for_each(position, sitd_itd_remove) {
-						
+
 						if (qhead->periodic_list.high_speed == 0){
 						/* Get an SITD in the list for processing */
 							current_sitd= list_entry(position, struct ehci_sitd,
-									sitd_list);		
+									sitd_list);
 							if(current_sitd->sitd_index==TD_PTD_INV_PTD_INDEX)
 								break;
-						}	
+						}
 					}
 				      if(current_sitd->sitd_index==TD_PTD_INV_PTD_INDEX){
 					  	qhead->actualptds++;
@@ -2268,7 +2270,7 @@ pehci_hcd_iso_worker(phci_hcd * hcd)
 				/* Free up the memory we allocated for the SITD structure */
 				qha_free(qha_cache, sitd);
 
-					
+
 				}else{
 #ifndef COMMON_MEMORY
 				phci_hcd_mem_free(&sitd->mem_addr);
@@ -2287,10 +2289,10 @@ pehci_hcd_iso_worker(phci_hcd * hcd)
 				td_ptd_map->sitd = NULL;
 				td_ptd_map->itd = NULL;
 
-				}		
+				}
 
-				
-				
+
+
 			}	else {	/*HIGH SPEED */
 
 				/* Get an ITD in the list for processing */
@@ -2327,7 +2329,7 @@ pehci_hcd_iso_worker(phci_hcd * hcd)
 					0, (u32 *) iso_ptd,
 					PHCI_QHA_LENGTH, 0);
 
-				/* 
+				/*
 				iso_dbg(ISO_DBG_DATA,
 					"[pehci_hcd_iso_worker]: DWORD0 =
 					0x%08x\n", iso_ptd->td_info1);
@@ -2466,7 +2468,7 @@ pehci_hcd_iso_worker(phci_hcd * hcd)
 						&& ((itd->ssplit & 0x2) == 0x2)
 						&& (urb->iso_frame_desc[itd->index +
 						1].status ==0)) {
-						
+
 						urb->iso_frame_desc[itd->index +1].
 							actual_length =	(iso_ptd->
 							td_info6 & 0x00FFF000)>> 12;
@@ -2487,14 +2489,14 @@ pehci_hcd_iso_worker(phci_hcd * hcd)
 						&& (urb->
 						iso_frame_desc[itd->index +
 						2].status ==0)) {
-						
+
 						urb->iso_frame_desc[itd->index +
 							2].actual_length =
 							((iso_ptd->td_info6 &
 							0xFF000000 )>> 24)
 							| ((iso_ptd->td_info7
 							& 0x0000000F)<< 8);
-						
+
 						iso_dbg(ISO_DBG_DATA,
 							"actual length[2] = %d\n",
 							urb->iso_frame_desc[itd->
@@ -2552,7 +2554,7 @@ pehci_hcd_iso_worker(phci_hcd * hcd)
 						urb->iso_frame_desc[itd->index +
 							5].actual_length =
 							((iso_ptd->
-							td_info7 & 0xF0000000) >> 28) | 
+							td_info7 & 0xF0000000) >> 28) |
 							((iso_ptd->td_info8 &
 							0x000000FF)
 							<< 4);
@@ -2579,7 +2581,7 @@ pehci_hcd_iso_worker(phci_hcd * hcd)
 							(iso_ptd->
 							td_info8 & 0x000FFF00)
 							>> 8;
-						
+
 						iso_dbg(ISO_DBG_DATA,
 							"actual length[6] = %d\n",
 							urb->
@@ -2913,9 +2915,9 @@ pehci_hcd_iso_worker(phci_hcd * hcd)
 						iReject = 1;
 					}
 #else
-				        if (unlikely(urb->reject)) {					       
-				
-					
+				        if (unlikely(urb->reject)) {
+
+
 						iso_dbg("ISO_DBG_INFO, [%s] urb reject\n", __FUNCTION__);
 						iReject = 1;
 					}
@@ -2956,7 +2958,7 @@ pehci_hcd_iso_worker(phci_hcd * hcd)
 #else
 						} else if (urb->ep ==
 							 periodic_ep[1]){
-#endif							 
+#endif
 							hcd->periodic_more_urb =
 							2;
 						} else {
@@ -2970,7 +2972,7 @@ pehci_hcd_iso_worker(phci_hcd * hcd)
 #if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,24)
 				usb_hcd_giveback_urb(&hcd->usb_hcd, urb);
 #else
-				usb_hcd_giveback_urb(&hcd->usb_hcd, urb, 
+				usb_hcd_giveback_urb(&hcd->usb_hcd, urb,
 										urb->status);
 #endif
 
@@ -3032,7 +3034,7 @@ pehci_hcd_iso_worker(phci_hcd * hcd)
 					[hcd->periodic_more_urb -
 					1]->urb_list.next,
 					struct urb, urb_list);
-				
+
 				if (urb) {
 					urb->status = -ENOENT;
 #if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,24)
@@ -3139,7 +3141,7 @@ pehci_hcd_intl_worker(phci_hcd * hcd)
 	}
 #else
 	else {
-	goto exit;	
+	goto exit;
 	//return 0;
 	}
 
@@ -3331,7 +3333,7 @@ pehci_hcd_intl_worker(phci_hcd * hcd)
 				qh->hw_current = cpu_to_le32(0);
 				qh->qh_state = QH_STATE_IDLE;
 				donemap	&= ~td_ptd_map->ptd_bitmap;
-				ptd_map_buff->pending_ptd_bitmap &= 
+				ptd_map_buff->pending_ptd_bitmap &=
 						~td_ptd_map->ptd_bitmap;
 	       			td_ptd_map->state=TD_PTD_NEW;
 				continue;
@@ -3362,7 +3364,7 @@ pehci_hcd_intl_worker(phci_hcd * hcd)
 	isp1763_reg_write16(hcd->dev, hcd->regs.int_irq_mask_or, ormask);
 exit:
 	pehci_entry("--	%s: Exit\n", __FUNCTION__);
-	
+
 //	return (int)0;
 }
 
@@ -3782,7 +3784,7 @@ pehci_hcd_atl_worker(phci_hcd * hcd)
 						 (u32) mem_addr->phy_addr, 0,
 						 (u32*) (le32_to_cpu(qtd->hw_buf[0])), length, 0);
 #if 0
-			//	printk("IN PayLoad length:%d\n", length); 
+			//	printk("IN PayLoad length:%d\n", length);
 			if(length<=4)	{
 					int i=0;
 					int *data_addr= qtd->hw_buf[0];
@@ -3897,8 +3899,8 @@ pehci_hub_descriptor(phci_hcd *	hcd, struct usb_hub_descriptor *desc)
 	desc->bDescLength = 7 +	2 * temp;
 	/* two bitmaps:	 ports removable, and usb 1.0 legacy PortPwrCtrlMask */
 
-	memset(&desc->DeviceRemovable[0], 0, temp);
-	memset(&desc->PortPwrCtrlMask[temp], 0xff, temp);
+	memset(&desc->u.hs.DeviceRemovable[0], 0, temp);
+	memset(&desc->u.hs.PortPwrCtrlMask[temp], 0xff, temp);
 
 	temp = 0x0008;		/* per-port overcurrent	reporting */
 	temp |=	0x0001;		/* per-port power control */
@@ -4063,18 +4065,18 @@ pehci_hcd_enable_interrupts(phci_hcd * hcd)
 
 	/*enable interrupts */
 	temp = 0;
-	
+
 #ifdef OTG_PACKAGE
 	temp |= INTR_ENABLE_MASK | HC_OTG_INT;
 #else
 	temp |= INTR_ENABLE_MASK;
-#endif	
+#endif
 	pehci_print("%s: enabled mask 0x%08x\n", __FUNCTION__, temp);
 	isp1763_reg_write16(hcd->dev, hcd->regs.interruptenable, temp);
 
 	temp = isp1763_reg_read16(hcd->dev, hcd->regs.interruptenable, temp);
 	pehci_print("%s: Intr enable reg value:	0x%08x\n", __FUNCTION__, temp);
-	
+
 #ifdef HCD_PACKAGE
 	temp = 0;
 	temp = isp1763_reg_read32(hcd->dev, HC_INT_THRESHOLD_REG, temp);
@@ -4258,7 +4260,7 @@ irqreturn_t pehci_hcd_irq(struct usb_hcd *usb_hcd)
 		}
 	}
 
-	set_bit(HCD_FLAG_SAW_IRQ, &usb_hcd->flags);
+	set_bit(HCD_FLAG_POLL_RH, &usb_hcd->flags);
 
 #ifndef THREAD_BASED
 /*-----------------------------------------------------------*/
@@ -4269,13 +4271,13 @@ irqreturn_t pehci_hcd_irq(struct usb_hcd *usb_hcd)
 		work = 1;	/* phci_iso_worker(hcd); */
 	}
 
-#ifdef USBNET 
+#ifdef USBNET
 	if (intr & HC_MSOF_INT ) {
 		struct list_head *pos, *q;
-	
+
 		list_for_each_safe(pos, q, &pehci_hcd->cleanup_urb.urb_list) {
 		struct isp1763_async_cleanup_urb *tmp;
-		
+
 			tmp = list_entry(pos, struct isp1763_async_cleanup_urb, urb_list);
 			if (tmp) {
 				spin_unlock(&pehci_hcd->lock);
@@ -4302,7 +4304,7 @@ irqreturn_t pehci_hcd_irq(struct usb_hcd *usb_hcd)
 	//	spin_unlock(&pehci_hcd->lock);
 		work = 0;	/*phci_intl_worker(hcd); */
 	}
-	
+
 	if (intr & (HC_ATL_INT & INTR_ENABLE_MASK)) {
 	//	spin_lock(&pehci_hcd->lock);
 #if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,24)
@@ -4346,12 +4348,12 @@ irqreturn_t pehci_hcd_irq(struct usb_hcd *usb_hcd)
 	if ((intr & (HC_INTL_INT & INTR_ENABLE_MASK)) ||(intr & (HC_ATL_INT & INTR_ENABLE_MASK)))
 	{ //send
 		st_UsbIt_Msg_Struc *stUsbItMsgSnd ;
-		
+
 		stUsbItMsgSnd = (st_UsbIt_Msg_Struc *)kmalloc(sizeof(st_UsbIt_Msg_Struc), GFP_ATOMIC);
 		if (!stUsbItMsgSnd) return -ENOMEM;
-		
+
 		memset(stUsbItMsgSnd, 0, sizeof(stUsbItMsgSnd));
-		
+
 		stUsbItMsgSnd->usb_hcd = usb_hcd;
 		stUsbItMsgSnd->uIntStatus = NO_SOF_REQ_IN_ISR;
 		list_add_tail(&(stUsbItMsgSnd->list), &(g_messList.list));
@@ -4394,7 +4396,7 @@ pehci_hcd_reset(struct usb_hcd *usb_hcd)
 	temp |=	8;
 	isp1763_reg_write16(hcd->dev, hcd->regs.reset, temp);
 	mdelay(10);
-	
+
 	/*reset	the host controller */
 	temp &=	0;
 	temp |=	1;
@@ -4493,7 +4495,7 @@ pehci_hcd_start(struct usb_hcd *usb_hcd)
 				   pehci_hcd->regs.hwmodecontrol, hwmodectrl);
 	hwmodectrl |=0x9;  //lock interface and enable global interrupt.
 	isp1763_reg_write16(pehci_hcd->dev, pehci_hcd->regs.hwmodecontrol,
-		hwmodectrl);	
+		hwmodectrl);
 	printk(KERN_NOTICE "Mode Ctrl Value after buswidth: %x\n", hwmodectrl);
 
 	isp1763_reg_write16(pehci_hcd->dev, pehci_hcd->regs.scratch, 0x3344);
@@ -4526,7 +4528,7 @@ pehci_hcd_start(struct usb_hcd *usb_hcd)
 			    NO_TRANSFER_DONE);
 	isp1763_reg_write16(pehci_hcd->dev, pehci_hcd->regs.isotddonemap,
 			    NO_TRANSFER_DONE);
-	
+
 #ifdef HCD_PACKAGE
 	/*port1 as Host */
 	isp1763_reg_write16(pehci_hcd->dev, OTG_CTRL_SET_REG, 0x0400);
@@ -4534,18 +4536,18 @@ pehci_hcd_start(struct usb_hcd *usb_hcd)
 	/*port2 as Host */
 	isp1763_reg_write16(pehci_hcd->dev, OTG_CTRL_SET_REG, 0x0000);
 	isp1763_reg_write16(pehci_hcd->dev, OTG_CTRL_CLEAR_REG, 0x8000);
-	
+
 	#if 0 /* do not use bit 1&2 for pure host application */
 	ul_scratchval =	isp1763_reg_read32(pehci_hcd->dev, HC_POWER_DOWN_CONTROL_REG,0);
-	ul_scratchval |= 0x006;	
+	ul_scratchval |= 0x006;
 	isp1763_reg_write32(pehci_hcd->dev, HC_POWER_DOWN_CONTROL_REG,ul_scratchval);
 	#endif
-	
+
 #elif defined(HCD_DCD_PACKAGE)
 
 	/*port1 as device */
-	isp1763_reg_write16(pehci_hcd->dev,OTG_CTRL_SET_REG, 
-			OTG_CTRL_DMPULLDOWN |OTG_CTRL_DPPULLDOWN | 
+	isp1763_reg_write16(pehci_hcd->dev,OTG_CTRL_SET_REG,
+			OTG_CTRL_DMPULLDOWN |OTG_CTRL_DPPULLDOWN |
 			OTG_CTRL_SW_SEL_HC_DC |OTG_CTRL_OTG_DISABLE);	/* pure	Device Mode and	OTG disabled */
 
 	isp1763_reg_write16(pehci_hcd->dev, OTG_CTRL_SET_REG, 0x0480);
@@ -4604,7 +4606,7 @@ pehci_hcd_start(struct usb_hcd *usb_hcd)
 
 	temp = isp1763_reg_read32(pehci_hcd->dev, HC_POWER_DOWN_CONTROL_REG,
 				  temp);
-	
+
 	temp = 0x3e81bA0;
 #if 0
 	temp |=	0x306;
@@ -4664,20 +4666,20 @@ pehci_hcd_urb_enqueue(struct usb_hcd *usb_hcd, struct urb *urb, gfp_t mem_flags)
 	int temp = 0, max = 0, num_tds = 0, mult = 0;
 	urb_priv_t *urb_priv = NULL;
 	unsigned long  flags;
-	
+
 	pehci_entry("++	%s: Entered\n",	__FUNCTION__);
 
-	
-	if (unlikely(atomic_read(&urb->reject))) 
+
+	if (unlikely(atomic_read(&urb->reject)))
 		return -EINVAL;
-	
+
 	INIT_LIST_HEAD(&qtd_list);
 	urb->transfer_flags &= ~EHCI_STATE_UNLINK;
 
 
 	temp = usb_pipetype(urb->pipe);
 	max = usb_maxpacket(urb->dev, urb->pipe, !usb_pipein(urb->pipe));
-	
+
 
 	if (hcdpowerdown == 1) {
 		printk("Enqueue	hcd power down\n");
@@ -4686,8 +4688,8 @@ pehci_hcd_urb_enqueue(struct usb_hcd *usb_hcd, struct urb *urb, gfp_t mem_flags)
 
 
 	/*pathch to get	the otg	device */
-	if (!hubdev || 
-		(urb->dev->parent==usb_hcd->self.root_hub && 
+	if (!hubdev ||
+		(urb->dev->parent==usb_hcd->self.root_hub &&
 		hubdev!=urb->dev)) {
 		if(urb->dev->parent== usb_hcd->self.root_hub) {
 			hubdev = urb->dev;
@@ -4730,9 +4732,9 @@ pehci_hcd_urb_enqueue(struct usb_hcd *usb_hcd, struct urb *urb, gfp_t mem_flags)
 				((urb->transfer_buffer_length -
 				  1) / HC_ATL_PL_SIZE +	3);
 		}
-		
+
 		break;
-		
+
 	case PIPE_BULK:
 		num_tds	=
 			(urb->transfer_buffer_length - 1) / HC_ATL_PL_SIZE + 1;
@@ -4740,9 +4742,9 @@ pehci_hcd_urb_enqueue(struct usb_hcd *usb_hcd, struct urb *urb, gfp_t mem_flags)
 			&& !(urb->transfer_buffer_length % max)) {
 			num_tds++;
 		}
-		
+
 		break;
-		
+
 #ifdef CONFIG_ISO_SUPPORT
 	case PIPE_ISOCHRONOUS:
 		/* Don't need to do anything here */
@@ -4863,27 +4865,27 @@ pehci_hcd_urb_enqueue(struct usb_hcd *usb_hcd, struct urb *urb, gfp_t mem_flags)
 		st_UsbIt_Msg_Struc *stUsbItMsgSnd ;
 		unsigned long flags;
 		spin_lock_irqsave(&pehci_hcd->lock,flags);
-	
+
 		//local_irq_save(flags); /*disable interrupt*/
 		stUsbItMsgSnd = (st_UsbIt_Msg_Struc *)kmalloc(sizeof(st_UsbIt_Msg_Struc), GFP_ATOMIC);
 		if (!stUsbItMsgSnd)
 		{
 			return -ENOMEM;
 		}
-		
+
 		memset(stUsbItMsgSnd, 0, sizeof(stUsbItMsgSnd));
-		
+
 		stUsbItMsgSnd->usb_hcd = usb_hcd;
 		stUsbItMsgSnd->uIntStatus = NO_SOF_REQ_IN_REQ;
 		spin_lock(&enqueue_lock);
 		if(list_empty(&g_enqueueMessList.list))
 			list_add_tail(&(stUsbItMsgSnd->list), &(g_enqueueMessList.list));
 		spin_unlock(&enqueue_lock);
-		
+
 		pehci_print("\n------------- send mess : %d------------\n",stUsbItMsgSnd->uIntStatus);
 
 		//local_irq_restore(flags); /*disable interrupt*/
-		
+
 		spin_lock(&g_stUsbItThreadHandler.lock);
 		if ((g_stUsbItThreadHandler.phThreadTask != NULL) && (g_stUsbItThreadHandler.lThrdWakeUpNeeded == 0))
 		{
@@ -5103,7 +5105,7 @@ pehci_hcd_urb_dequeue(struct usb_hcd *usb_hcd, struct urb *urb, int status)
 
 		urb->status=status;
 		status = 0;
-#ifdef USBNET 
+#ifdef USBNET
 #if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,24)
 		pehci_hcd_urb_delayed_complete(hcd, qh, urb, td_ptd_map, NULL);
 #else
@@ -5172,7 +5174,7 @@ pehci_hcd_urb_dequeue(struct usb_hcd *usb_hcd, struct urb *urb, int status)
 	}
 #endif
 
-		
+
 		status = 0;
 		ep=urb->ep;
 		spin_unlock_irqrestore(&hcd->lock, flags);
@@ -5184,7 +5186,7 @@ pehci_hcd_urb_dequeue(struct usb_hcd *usb_hcd, struct urb *urb, int status)
 #else
 						if (urb->ep != periodic_ep[0]){
 #endif
-	if(!list_empty(&ep->urb_list)){	
+	if(!list_empty(&ep->urb_list)){
 		while(!list_empty(&ep->urb_list)){
 			urb=container_of(ep->urb_list.next,struct urb,urb_list);
 			pehci_info("list is not empty %x %x\n",urb,urb->dev->state);
@@ -5200,7 +5202,7 @@ pehci_hcd_urb_dequeue(struct usb_hcd *usb_hcd, struct urb *urb, int status)
 	#else
 			usb_hcd_giveback_urb(usb_hcd,urb,urb->status);
 	#endif
-				
+
 			}
 		}
 		}else{
@@ -5218,11 +5220,11 @@ pehci_hcd_urb_dequeue(struct usb_hcd *usb_hcd, struct urb *urb, int status)
 	#else
 			usb_hcd_giveback_urb(usb_hcd,urb,urb->status);
 	#endif
-				
+
 			}
-			
+
 		}
-	}	
+	}
 #endif
 		return 0;
 		/*nothing to do	here, wait till	all transfers are done in iso worker */
@@ -5250,7 +5252,7 @@ pehci_hcd_endpoint_disable(struct usb_hcd *usb_hcd,
 	pehci_entry("++	%s: Entered\n",	__FUNCTION__);
 	/* ASSERT:  any	requests/urbs are being	unlinked */
 	/* ASSERT:  nobody can be submitting urbs for this any more */
-	
+
 #ifdef CONFIG_ISO_SUPPORT
 	mdelay(100);  //delay for ISO
 #endif
@@ -5264,13 +5266,13 @@ pehci_hcd_endpoint_disable(struct usb_hcd *usb_hcd,
 #ifdef CONFIG_ISO_SUPPORT
 		pehci_info("disable endpoint %x %x\n", ep->desc.bEndpointAddress,qh->type);
 
-		
+
 		if (qh->type == TD_PTD_BUFF_TYPE_ISTL) {
 
 			/*wait for urb to get complete*/
 			pehci_info("disable %x \n", list_empty(&ep->urb_list));
 			while (!list_empty(&ep->urb_list)) {
-			
+
 				urb = container_of(ep->urb_list.next,
 					struct urb, urb_list);
 				if (urb) {
@@ -5279,7 +5281,7 @@ pehci_hcd_endpoint_disable(struct usb_hcd *usb_hcd,
 						flags);
 
 					urb->status = -ESHUTDOWN;
-					
+
 #if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,24)
 					usb_hcd_giveback_urb(usb_hcd, urb);
 #else
@@ -5397,7 +5399,7 @@ pehci_rh_control(struct	usb_hcd	*usb_hcd, u16 typeReq, u16 wValue,
 	ports =	0x11;
 
 	printk("%s: request %x,wValuse:0x%x, wIndex:0x%x \n",__func__, typeReq,wValue,wIndex);
-	
+
 	spin_lock_irqsave(&hcd->lock, flags);
 	switch (typeReq) {
 	case ClearHubFeature:
@@ -5596,12 +5598,12 @@ pehci_rh_control(struct	usb_hcd	*usb_hcd, u16 typeReq, u16 wValue,
 				temp | PORT_PE);
 			break;
 		case USB_PORT_FEAT_SUSPEND:
-			
+
 			#if 0 /* Port suspend will be added in suspend function */
 			isp1763_reg_write32(hcd->dev, hcd->regs.ports[wIndex],
 				temp | PORT_SUSPEND);
 			#endif
-			
+
 			break;
 		case USB_PORT_FEAT_POWER:
 			pehci_print("Set Port Power 0x%x and Ports %x\n",
@@ -5708,7 +5710,7 @@ static const struct hc_driver pehci_driver = {
 int pehci_hcd_process_irq_it_handle(struct usb_hcd* usb_hcd_)
 {
 	int istatus;
-	
+
 	struct usb_hcd 		*usb_hcd;
 	char					uIntStatus;
 	phci_hcd    *pehci_hcd;
@@ -5716,11 +5718,11 @@ int pehci_hcd_process_irq_it_handle(struct usb_hcd* usb_hcd_)
 	struct list_head *pos, *lst_tmp;
 	st_UsbIt_Msg_Struc *mess;
 	unsigned long flags;
-	
+
 	g_stUsbItThreadHandler.phThreadTask = current;
-	siginitsetinv(&((g_stUsbItThreadHandler.phThreadTask)->blocked), sigmask(SIGKILL)|sigmask(SIGINT)|sigmask(SIGTERM));		
+	siginitsetinv(&((g_stUsbItThreadHandler.phThreadTask)->blocked), sigmask(SIGKILL)|sigmask(SIGINT)|sigmask(SIGTERM));
 	pehci_info("pehci_hcd_process_irq_it_thread ID : %d\n", g_stUsbItThreadHandler.phThreadTask->pid);
-	
+
 	while (1)
 	{
 		if (signal_pending(g_stUsbItThreadHandler.phThreadTask))
@@ -5732,7 +5734,7 @@ int pehci_hcd_process_irq_it_handle(struct usb_hcd* usb_hcd_)
 		spin_lock(&g_stUsbItThreadHandler.lock);
 		g_stUsbItThreadHandler.lThrdWakeUpNeeded = 0;
 		spin_unlock(&g_stUsbItThreadHandler.lock);
-		
+
 		/* Wait until a signal arrives or we are woken up or timeout (5second)*/
 		istatus = wait_event_interruptible_timeout(g_stUsbItThreadHandler.ulThrdWaitQhead, (g_stUsbItThreadHandler.lThrdWakeUpNeeded== 1), msecs_to_jiffies(MSEC_INTERVAL_CHECKING));
 
@@ -5740,7 +5742,7 @@ int pehci_hcd_process_irq_it_handle(struct usb_hcd* usb_hcd_)
 		spin_lock(&g_stUsbItThreadHandler.lock);
 		g_stUsbItThreadHandler.lThrdWakeUpNeeded = 1;
 		spin_unlock(&g_stUsbItThreadHandler.lock);
-		//receive mess	
+		//receive mess
 		if (!list_empty(&g_messList.list)) //mess list not empty
 		{
 
@@ -5757,7 +5759,7 @@ int pehci_hcd_process_irq_it_handle(struct usb_hcd* usb_hcd_)
 				spin_lock(&g_stUsbItThreadHandler.lock);
 				list_del(pos);
 				kfree(mess);
-				spin_unlock(&g_stUsbItThreadHandler.lock);				
+				spin_unlock(&g_stUsbItThreadHandler.lock);
 			}
 		}
 		else if(!list_empty(&g_enqueueMessList.list))
@@ -5771,14 +5773,14 @@ int pehci_hcd_process_irq_it_handle(struct usb_hcd* usb_hcd_)
 			if((uIntStatus & NO_SOF_REQ_IN_REQ))
 			{
 				pehci_interrupt_handler(pehci_hcd);
-			}	
+			}
 
 			{
 				spin_lock(&enqueue_lock);
 				list_del((g_enqueueMessList.list).next);
 				kfree(mess);
 				spin_unlock(&enqueue_lock);
-			}	
+			}
 		}
 		else if(istatus == 0) //timeout
 		{
@@ -5793,12 +5795,12 @@ int pehci_hcd_process_irq_it_handle(struct usb_hcd* usb_hcd_)
 	flush_signals(g_stUsbItThreadHandler.phThreadTask);
 	g_stUsbItThreadHandler.phThreadTask = NULL;
 	return 0;
-	
+
 }
 
 int pehci_hcd_process_irq_in_thread(struct usb_hcd* usb_hcd_)
 {
-	
+
 	//status = msgq_create("usb_it_queue", 10, sizeof(st_UsbIt_Msg_Struc), &uUsbIt_MsgQueId);
 	INIT_LIST_HEAD(&g_messList.list);
 	INIT_LIST_HEAD(&g_enqueueMessList.list);
@@ -5809,7 +5811,7 @@ int pehci_hcd_process_irq_in_thread(struct usb_hcd* usb_hcd_)
 	g_stUsbItThreadHandler.lThrdWakeUpNeeded = 0;
 	spin_lock_init(&g_stUsbItThreadHandler.lock);
 	kernel_thread(pehci_hcd_process_irq_it_handle, usb_hcd_, 0);
-	
+
     return 0;
 }
 #endif
@@ -5891,7 +5893,7 @@ pehci_hcd_probe(struct isp1763_dev *isp1763_dev, isp1763_id * ids)
 	usb_hcd->self.controller->dma_mask = 0;
 	usb_hcd->self.otg_port = 1;
 #if 0
-#ifndef THREAD_BASED 	
+#ifndef THREAD_BASED
 	status = isp1763_request_irq(pehci_hcd_irq, isp1763_dev, usb_hcd);
 #endif
 #endif
@@ -5907,11 +5909,11 @@ pehci_hcd_probe(struct isp1763_dev *isp1763_dev, isp1763_id * ids)
 	}
 #endif
 
-#ifdef THREAD_BASED 	
+#ifdef THREAD_BASED
 	g_pehci_hcd = pehci_hcd;
 #endif
 
-#ifdef USBNET 
+#ifdef USBNET
 	// initialize clean up urb list
 	INIT_LIST_HEAD(&(pehci_hcd->cleanup_urb.urb_list));
 #endif
@@ -5937,20 +5939,20 @@ pehci_hcd_probe(struct isp1763_dev *isp1763_dev, isp1763_id * ids)
  *  Input: struct isp1763_Dev *
  *
  *
- *  
+ *
  *
  *  Called by: IOCTL function
  *
  *
  --------------------------------------------------------------*/
-void 
+void
 pehci_hcd_powerup(struct	isp1763_dev *dev)
 {
 	printk("%s\n", __FUNCTION__);
 	hcdpowerdown = 0;
 	dev->driver->probe(dev,dev->driver->id);
 
-	
+
 }
 void
 pehci_hcd_powerdown(struct	isp1763_dev *dev)
@@ -5963,7 +5965,7 @@ pehci_hcd_powerdown(struct	isp1763_dev *dev)
 	if (!usb_hcd) {
 		return;
 	}
-	
+
 	printk("%s\n", __FUNCTION__);
 	hcd = usb_hcd_to_pehci_hcd(usb_hcd);
 
@@ -5975,7 +5977,7 @@ pehci_hcd_powerdown(struct	isp1763_dev *dev)
 //	isp1763_free_irq(dev,usb_hcd);
 	usb_remove_hcd(usb_hcd);
 	dev->driver_data = NULL;
-	
+
 
 	temp = isp1763_reg_read16(dev, HC_INTENABLE_REG, temp); //0xD6
 	temp &= ~0x400;		/*disable otg interrupt*/
@@ -5999,7 +6001,7 @@ pehci_hcd_powerdown(struct	isp1763_dev *dev)
 
 		temp = isp1763_reg_read32(dev, HC_PORTSC1_REG, 0);
 	}
-	
+
 	printk("port status %x\n ", temp);
 	temp &= ~0x2;
 	temp &= ~0x40;		/*force port resume*/
@@ -6024,7 +6026,7 @@ pehci_hcd_powerdown(struct	isp1763_dev *dev)
 	wake_lock_destroy(&pehci_wake_lock);
 
 	hcdpowerdown = 1;
-	
+
 }
 
 static int pehci_bus_suspend(struct usb_hcd *usb_hcd)
@@ -6034,16 +6036,16 @@ static int pehci_bus_suspend(struct usb_hcd *usb_hcd)
 	phci_hcd *pehci_hcd = NULL;
 	struct isp1763_dev *dev = NULL;
 
-	
+
 	if (!usb_hcd) {
 		return -EBUSY;
 	}
-	
+
 	printk("++ %s \n",__FUNCTION__);
 	pehci_hcd = usb_hcd_to_pehci_hcd(usb_hcd);
 
 	dev = pehci_hcd->dev;
-	
+
 	spin_lock_irqsave(&pehci_hcd->lock, flags);
 	if(hcdpowerdown){
 		spin_unlock_irqrestore(&pehci_hcd->lock, flags);
@@ -6061,17 +6063,17 @@ static int pehci_bus_suspend(struct usb_hcd *usb_hcd)
 	temp=isp1763_reg_read16(dev,HC_INTENABLE_REG,0);
 
 	hcdpowerdown = 1;
-	
+
 	/* stop the controller first */
 	temp = isp1763_reg_read16(dev, HC_USBCMD_REG, 0);
-	temp &= ~0x01;		
+	temp &= ~0x01;
 	isp1763_reg_write16(dev, HC_USBCMD_REG, temp);
 
 	/* suspend root port which will suspend host controller of the ISP1763A */
 	temp = isp1763_reg_read32(dev, HC_PORTSC1_REG, 0);
 	temp |= (PORT_SUSPEND);//0x80
 	isp1763_reg_write32(dev, HC_PORTSC1_REG, temp);
-	
+
 	/* suspend device controller of the ISP1763a*/
 	temp = isp1763_reg_read16(dev, HC_HW_MODE_REG, 0);
 	temp |= 0x20;
@@ -6091,7 +6093,7 @@ static int pehci_bus_suspend(struct usb_hcd *usb_hcd)
 	wake_unlock(&pehci_wake_lock);
 
 	return 0;
-	
+
 
 }
 
@@ -6222,7 +6224,7 @@ pehci_hcd_resume(struct	isp1763_dev *dev)
 	}
 
 	/* Start the controller */
-	temp = 0x01;		
+	temp = 0x01;
 	isp1763_reg_write16(dev, HC_USBCMD_REG, temp);
 
 	/* update power down control reg value */
@@ -6232,7 +6234,7 @@ pehci_hcd_resume(struct	isp1763_dev *dev)
 		if(i==POWER_DOWN_CTRL_NORMAL_VALUE)
 		break;
 	}
-	
+
 	if (temp == 100) {
 		pr_err("%s:isp1763a failed to resume\n", __func__);
 		return;
@@ -6241,21 +6243,21 @@ pehci_hcd_resume(struct	isp1763_dev *dev)
 	wake_lock(&pehci_wake_lock);
 
 	isp1763_reg_write16(dev, HC_INTENABLE_REG,0); //0xD6
-	isp1763_reg_write32(dev,HC_INTERRUPT_REG_EHCI,0x4); //0x94 
-	isp1763_reg_write32(dev,HC_INTERRUPT_REG,0xFFFF); //0x94 
-	/* clear suspend bit and resume bit */	
+	isp1763_reg_write32(dev,HC_INTERRUPT_REG_EHCI,0x4); //0x94
+	isp1763_reg_write32(dev,HC_INTERRUPT_REG,0xFFFF); //0x94
+	/* clear suspend bit and resume bit */
 	temp = isp1763_reg_read32(dev, HC_PORTSC1_REG, 0);
 	temp &= ~(PORT_SUSPEND); //0x80;		/*suspend*/
 	temp &= ~(PORT_RESUME);  // 0x40;
 	isp1763_reg_write32(dev, HC_PORTSC1_REG, temp);
-	
+
 	isp1763_reg_write16(dev, HC_INTENABLE_REG, INTR_ENABLE_MASK); //0xD6
-	/*this is just make sure port is resumed back */	
+	/*this is just make sure port is resumed back */
 	mdelay(1);
 	temp = isp1763_reg_read32(dev, HC_PORTSC1_REG, 0);
 	printk("after hcd resume :port status %x\n ", temp);
-	
-	hcdpowerdown = 0;	
+
+	hcdpowerdown = 0;
 
 	phci_resume_wakeup(dev);
 
@@ -6289,7 +6291,7 @@ pehci_hcd_suspend(struct isp1763_dev *dev)
 	isp1763_reg_write32(dev, HC_USBSTS_REG, 0x4); //0x90
 	isp1763_reg_write32(dev, HC_INTERRUPT_REG_EHCI, 0x4); //0x94
 	isp1763_reg_write16(dev, HC_INTERRUPT_REG, INTR_ENABLE_MASK); //0xd4
-	
+
 	temp=isp1763_reg_read16(dev, HC_INTERRUPT_REG, 0); //0xd4
 
 	printk("suspend :Interrupt Status %x\n",temp);
@@ -6297,7 +6299,7 @@ pehci_hcd_suspend(struct isp1763_dev *dev)
 	temp=isp1763_reg_read16(dev,HC_INTENABLE_REG,0);
 	printk("suspend :Interrupt Enable %x\n",temp);
 	temp = isp1763_reg_read32(dev, HC_PORTSC1_REG, 0);
-	
+
 	printk("suspend :port status %x\n ", temp);
 	temp &= ~0x2;
 	temp &= ~0x40;		/*force port resume*/
@@ -6327,10 +6329,10 @@ pehci_hcd_suspend(struct isp1763_dev *dev)
 	isp1763_reg_write32(dev, HC_POWER_DOWN_CONTROL_REG, 0xffff0830);
 
 	wake_unlock(&pehci_wake_lock);
-	
+
 }
 
-void 
+void
 pehci_hcd_remotewakeup(struct isp1763_dev *dev){
 	if(hubdev){
 		hubdev->hcd_priv=dev;
@@ -6345,7 +6347,7 @@ pehci_hcd_remove(struct	isp1763_dev *isp1763_dev)
 {
 
 	struct usb_hcd *usb_hcd;
-	
+
 #ifdef NON_PCI
 #else	/* PCI */
 //	struct pci_dev *dev = isp1763_dev->pcidev;
@@ -6440,7 +6442,7 @@ usb_hcddev_ioctl(struct file *fp,
 		HostComplianceTest = HOST_COMPILANCE_TEST_ENABLE;
 		HostTest = HOST_COMP_TEST_SE0_NAK;
 		break;
-	case   HCD_IOC_TEST_J:		
+	case   HCD_IOC_TEST_J:
 		HostComplianceTest = HOST_COMPILANCE_TEST_ENABLE;
 		HostTest = HOST_COMP_TEST_J;
 		break;
@@ -6448,7 +6450,7 @@ usb_hcddev_ioctl(struct file *fp,
 		HostComplianceTest = HOST_COMPILANCE_TEST_ENABLE;
 		HostTest = HOST_COMP_TEST_K;
 		break;
-		
+
 	case   HCD_IOC_TEST_TESTPACKET:
 		HostComplianceTest = HOST_COMPILANCE_TEST_ENABLE;
 		HostTest = HOST_COMP_TEST_PACKET;
@@ -6463,15 +6465,15 @@ usb_hcddev_ioctl(struct file *fp,
 		break;
 	case HCD_IOC_TEST_SINGLE_STEP_GET_DEV_DESC:
 		HostComplianceTest = HOST_COMPILANCE_TEST_ENABLE;
-		HostTest = HOST_COMP_SINGLE_STEP_GET_DEV_DESC;		
+		HostTest = HOST_COMP_SINGLE_STEP_GET_DEV_DESC;
 		break;
 	case HCD_IOC_TEST_SINGLE_STEP_SET_FEATURE:
 		HostComplianceTest = HOST_COMPILANCE_TEST_ENABLE;
-		HostTest = HOST_COMP_SINGLE_STEP_SET_FEATURE;		
+		HostTest = HOST_COMP_SINGLE_STEP_SET_FEATURE;
 		break;
 	case HCD_IOC_TEST_STOP:
 		HostComplianceTest = 0;
-		HostTest = 0;		
+		HostTest = 0;
 		break;
 	case     HCD_IOC_SUSPEND_BUS:
 		printk("isp1763:SUSPEND bus\n");
@@ -6481,13 +6483,13 @@ usb_hcddev_ioctl(struct file *fp,
 	case	HCD_IOC_RESUME_BUS:
 		printk("isp1763:RESUME bus\n");
 		if(isp1763_hcd->driver->resume)
-			isp1763_hcd->driver->resume(isp1763_hcd);		
+			isp1763_hcd->driver->resume(isp1763_hcd);
 		break;
 	case     HCD_IOC_REMOTEWAKEUP_BUS:
 		printk("isp1763:SUSPEND bus\n");
 		if(isp1763_hcd->driver->remotewakeup)
 			isp1763_hcd->driver->remotewakeup(isp1763_hcd);
-		break;		
+		break;
 	default:
 
 		break;
@@ -6527,16 +6529,16 @@ pehci_module_init(void)
 			result);
 	}
 
-#ifdef THREAD_BASED 	
+#ifdef THREAD_BASED
 	pehci_hcd_process_irq_in_thread(&(g_pehci_hcd->usb_hcd));
-   	printk("kernel_thread() Enter\n"); 
+   	printk("kernel_thread() Enter\n");
 #endif
-	
+
 #ifdef HCD_PACKAGE
 	printk("Register Char Driver for HCD\n");
 	result = register_chrdev(USB_HCD_MAJOR, USB_HCD_MODULE_NAME,
 		&usb_hcddev_fops);
-	
+
 #endif
 	return result;
 
@@ -6545,7 +6547,7 @@ pehci_module_init(void)
 static void __exit
 pehci_module_cleanup(void)
 {
-#ifdef THREAD_BASED	
+#ifdef THREAD_BASED
 	printk("module exit:  Sending signal to stop thread\n");
 	if (g_stUsbItThreadHandler.phThreadTask != NULL)
 	{
