@@ -49,6 +49,15 @@
 #define SC_DC_FERROR	0x00800000	/* fatal decomp error detected */
 #define SC_DC_ERROR	0x00400000	/* non-fatal decomp error detected */
 
+/*
+ * Packet sizes
+ */
+
+#define PPP_MTU     1500    /* Default MTU (size of Info field) */
+#define PPP_MAXMRU  65000   /* Largest MRU we allow */
+#define PROTO_IPX   0x002b  /* protocol numbers */
+#define PROTO_DNA_RT    0x0027  /* DNA Routing */
+
 /* Used with PPPIOCGNPMODE/PPPIOCSNPMODE */
 struct npioctl {
 	int		protocol;	/* PPP protocol, e.g. PPP_IP */
