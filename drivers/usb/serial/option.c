@@ -1156,7 +1156,7 @@ static const struct usb_device_id option_ids[] = {
 	{ USB_DEVICE(CINTERION_VENDOR_ID, CINTERION_PRODUCT_EU3_E) },
 	{ USB_DEVICE(CINTERION_VENDOR_ID, CINTERION_PRODUCT_EU3_P) },
 	{ USB_DEVICE(CINTERION_VENDOR_ID, CINTERION_PRODUCT_PH8) },
-	{ USB_DEVICE(CINTERION_VENDOR_ID, CINTERION_PRODUCT_HC28_MDM) }, 
+	{ USB_DEVICE(CINTERION_VENDOR_ID, CINTERION_PRODUCT_HC28_MDM) },
 	{ USB_DEVICE(CINTERION_VENDOR_ID, CINTERION_PRODUCT_HC28_MDMNET) },
 	{ USB_DEVICE(SIEMENS_VENDOR_ID, CINTERION_PRODUCT_HC25_MDM) },
 	{ USB_DEVICE(SIEMENS_VENDOR_ID, CINTERION_PRODUCT_HC25_MDMNET) },
@@ -1273,18 +1273,18 @@ static bool debug;
 
 /* per port private data */
 
-#define N_IN_URB 4
-#define N_OUT_URB 4
-#define IN_BUFLEN 4096
-#define OUT_BUFLEN 4096
+#define N_IN_URB_OPT 4
+#define N_OUT_URB_OPT 4
+#define IN_BUFLEN_OPT 4096
+#define OUT_BUFLEN_OPT 4096
 
 struct option_port_private {
 	/* Input endpoints and buffer for this port */
-	struct urb *in_urbs[N_IN_URB];
-	u8 *in_buffer[N_IN_URB];
+	struct urb *in_urbs[N_IN_URB_OPT];
+	u8 *in_buffer[N_IN_URB_OPT];
 	/* Output endpoints and buffer for this port */
-	struct urb *out_urbs[N_OUT_URB];
-	u8 *out_buffer[N_OUT_URB];
+	struct urb *out_urbs[N_OUT_URB_OPT];
+	u8 *out_buffer[N_OUT_URB_OPT];
 	unsigned long out_busy;		/* Bit vector of URBs in use */
 	int opened;
 	struct usb_anchor delayed;
@@ -1297,7 +1297,7 @@ struct option_port_private {
 	int dcd_state;
 	int ri_state;
 
-	unsigned long tx_start_time[N_OUT_URB];
+	unsigned long tx_start_time[N_OUT_URB_OPT];
 };
 
 module_usb_serial_driver(option_driver, serial_drivers);
