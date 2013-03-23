@@ -25,6 +25,14 @@ config MT9D113
 	  This sensor is the front camera on QT8660.
 	  This uses csi mipi interface.
 	  This sensor is used only on QT device.
+config MT9M113
+	bool "Sensor mt9m113 (YUV 1.3M)"
+	depends on MSM_CAMERA && ARCH_MSM8X60 && !MSM_CAMERA_V4L2
+	default y
+	---help---
+	  MICRON 1.3M YUV Sensor
+	  This sensor is the front camera on HP Touchpad.
+	  This uses csi mipi interface.
 config MT9D112
 	bool "Sensor mt9d112 (YUV 2M)"
 	depends on MSM_CAMERA && !ARCH_MSM8X60 && !ARCH_MSM8960 && !MSM_CAMERA_V4L2

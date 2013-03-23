@@ -30,6 +30,7 @@ else
 endif
 obj-$(CONFIG_ARCH_MSM8960) += msm_vpe.o
 obj-$(CONFIG_MT9T013) += mt9t013.o mt9t013_reg.o
+obj-$(CONFIG_MT9M113) += mt9m113.o mt9m113_reg.o
 obj-$(CONFIG_SN12M0PZ) += sn12m0pz.o sn12m0pz_reg.o
 obj-$(CONFIG_MT9P012) += mt9p012_reg.o
 obj-$(CONFIG_MSM_CAMERA_AF_FOXCONN) += mt9p012_fox.o
