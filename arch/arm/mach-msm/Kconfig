@@ -705,6 +705,13 @@ config MACH_MSM8X60_SURF
 	help
 	  Support for the Qualcomm MSM8x60 SURF eval board.
 
+config MACH_MSM8X60_TENDERLOIN
+	depends on ARCH_MSM8X60
+	default n
+	bool "MSM8x60 TENDERLOIN"
+	help
+	  Support for the Qualcomm MSM8x60 TENDERLOIN board (HP Touchpad).
+
 config MACH_MSM8X60_FFA
 	depends on ARCH_MSM8X60
 	default n
