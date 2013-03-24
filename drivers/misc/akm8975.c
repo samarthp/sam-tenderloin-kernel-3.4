@@ -33,6 +33,7 @@
 #include <linux/freezer.h>
 #include <linux/akm8975.h>
 #include <linux/earlysuspend.h>
+#include <linux/module.h>
 
 #define AK8975DRV_CALL_DBG 0
 #if AK8975DRV_CALL_DBG
@@ -84,7 +85,8 @@ static ssize_t akm8975_store(struct device *dev, struct device_attribute *attr,
 {
 	struct i2c_client *client = to_i2c_client(dev);
 	unsigned long val;
-	strict_strtoul(buf, 10, &val);
+	if (strict_strtoul(buf, 10, &val))
+		return -EINVAL;
 	if (val > 0xff)
 		return -EINVAL;
 	i2c_smbus_write_byte_data(client, AK8975_REG_CNTL, val);
@@ -222,7 +224,7 @@ static int akm_aot_release(struct inode *inode, struct file *file)
 	return 0;
 }
 
-static int akm_aot_ioctl(struct inode *inode, struct file *file,
+static long akm_aot_ioctl(struct file *file,
 	      unsigned int cmd, unsigned long arg)
 {
 	void __user *argp = (void __user *) arg;
@@ -316,7 +318,7 @@ static int akmd_release(struct inode *inode, struct file *file)
 	return 0;
 }
 
-static int akmd_ioctl(struct inode *inode, struct file *file, unsigned int cmd,
+static long akmd_ioctl(struct file *file, unsigned int cmd,
 		      unsigned long arg)
 {
 	void __user *argp = (void __user *) arg;
@@ -537,14 +539,14 @@ static const struct file_operations akmd_fops = {
 	.owner = THIS_MODULE,
 	.open = akmd_open,
 	.release = akmd_release,
-	.ioctl = akmd_ioctl,
+	.unlocked_ioctl = akmd_ioctl,
 };
 
 static const struct file_operations akm_aot_fops = {
 	.owner = THIS_MODULE,
 	.open = akm_aot_open,
 	.release = akm_aot_release,
-	.ioctl = akm_aot_ioctl,
+	.unlocked_ioctl = akm_aot_ioctl,
 };
 
 static struct miscdevice akm_aot_device = {
