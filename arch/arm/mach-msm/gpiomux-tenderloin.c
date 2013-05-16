@@ -2219,7 +2219,7 @@ static struct msm_gpiomux_config msm8x60_bt_configs_3g[] __initdata = {
 #endif
 
 /* SAM: Add support for Keyboard GPIO PE */
-#ifdef CONFIG_KEYBOARD_GPIO
+#ifdef CONFIG_KEYBOARD_GPIO_PE
 static struct gpiomux_setting kbdgpio_active_cfg = {
     .func = GPIOMUX_FUNC_GPIO,
     .drv = GPIOMUX_DRV_8MA,
@@ -2848,7 +2848,7 @@ tenderloin_gpiomux_cfgs[] __initdata = {
     {msm8x60_lcdc_configs, ARRAY_SIZE(msm8x60_lcdc_configs)},
     {msm8x60_sensor_cfgs, ARRAY_SIZE(msm8x60_sensor_cfgs)},
     {msm8x60_lighting_cfgs, ARRAY_SIZE(msm8x60_lighting_cfgs)},
-#ifdef CONFIG_KEYBOARD_GPIO
+#ifdef CONFIG_KEYBOARD_GPIO_PE
     {msm8x60_kbdgpio_cfgs, ARRAY_SIZE(msm8x60_kbdgpio_cfgs)},
 #endif
 #ifdef CONFIG_CHARGER_MAX8903
@@ -2901,7 +2901,7 @@ tenderloin_3g_gpiomux_cfgs[] __initdata = {
     {msm8x60_sensor_cfgs_3g, ARRAY_SIZE(msm8x60_sensor_cfgs_3g)},
     {msm8x60_lighting_cfgs_3g, ARRAY_SIZE(msm8x60_lighting_cfgs_3g)},
 
-#ifdef CONFIG_KEYBOARD_GPIO
+#ifdef CONFIG_KEYBOARD_GPIO_PE
     {msm8x60_kbdgpio_cfgs_3g, ARRAY_SIZE(msm8x60_kbdgpio_cfgs)},
 #endif
 #ifdef CONFIG_CHARGER_MAX8903
@@ -2957,7 +2957,7 @@ tenderloin_dvt_gpiomux_cfgs[] __initdata = {
     {msm8x60_lcdc_configs, ARRAY_SIZE(msm8x60_lcdc_configs)},
     {msm8x60_sensor_cfgs, ARRAY_SIZE(msm8x60_sensor_cfgs)},
     {msm8x60_lighting_cfgs, ARRAY_SIZE(msm8x60_lighting_cfgs)},
-#ifdef CONFIG_KEYBOARD_GPIO
+#ifdef CONFIG_KEYBOARD_GPIO_PE
     {msm8x60_kbdgpio_cfgs, ARRAY_SIZE(msm8x60_kbdgpio_cfgs)},
 #endif
 #ifdef CONFIG_CHARGER_MAX8903
@@ -3009,7 +3009,7 @@ tenderloin_3g_dvt_gpiomux_cfgs[] __initdata = {
     {msm8x60_sensor_cfgs_3g, ARRAY_SIZE(msm8x60_sensor_cfgs_3g)},
     {msm8x60_lighting_cfgs_3g, ARRAY_SIZE(msm8x60_lighting_cfgs_3g)},
 
-#ifdef CONFIG_KEYBOARD_GPIO
+#ifdef CONFIG_KEYBOARD_GPIO_PE
     {msm8x60_kbdgpio_cfgs_3g, ARRAY_SIZE(msm8x60_kbdgpio_cfgs)},
 #endif
 #ifdef CONFIG_CHARGER_MAX8903

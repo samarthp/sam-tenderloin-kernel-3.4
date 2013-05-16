@@ -14,8 +14,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301, USA.
  */
-#ifndef __ARCH_ARM_MACH_MSM_GPIOMUX_8X60_H
-#define __ARCH_ARM_MACH_MSM_GPIOMUX_8X60_H
+#ifndef __ARCH_ARM_MACH_MSM_GPIOMUX_TENDERLOIN_H
+#define __ARCH_ARM_MACH_MSM_GPIOMUX_TENDERLOIN_H
 
 #include <mach/gpiomux.h>
 
@@ -58,7 +58,7 @@ extern struct msm_gpiomux_configs tenderloin_3g_dvt_gpiomux_cfgs[] __initdata;
 #define BT_WAKE_3G			131
 #define BT_HOST_WAKE_3G			50
 
-#ifdef CONFIG_KEYBOARD_GPIO
+#ifdef CONFIG_KEYBOARD_GPIO_PE
 /* GPIO Keys */
 #define CORE_NAVI_GPIO			40
 #define VOL_UP_GPIO			103
@@ -205,7 +205,6 @@ enum tenderloin_pins {
 	NUM_TOPAZ_PINS
 };
 
-#if 0
 static int tenderloin_pins_wifi [] = {
 	[MXT1386_TS_PEN_IRQ] = MXT1386_TS_PEN_IRQ_GPIO,
 	[GPIO_CTP_WAKE_PIN] = GPIO_CTP_WAKE,
@@ -336,6 +335,5 @@ static int tenderloin_pins_3g_dvt [] = {
 	[VOL_DN_GPIO_PIN] = VOL_DN_GPIO_3G,
 	[TENDERLOIN_GPIO_3G_3V3_EN] = GPIO_3G_3V3_EN_DVT,
 };
-#endif
 
 #endif
