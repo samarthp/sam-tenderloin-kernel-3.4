@@ -433,6 +433,13 @@ config LEDS_QCIBL
 	  Say Y here if you want to use the Quanta backlight driver for ST15
 	  platform.
 
+config LEDS_LM8502
+    tristate "LED Support for NS LM8502 controlled LEDs"
+    depends on LEDS_CLASS
+    default n
+    help
+      This options enables support for NS LM8502 LED controller.
+
 config LEDS_NS2
 	tristate "LED support for Network Space v2 GPIO LEDs"
 	depends on LEDS_CLASS
