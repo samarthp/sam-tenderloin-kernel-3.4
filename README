@@ -4,6 +4,15 @@ These are the release notes for Linux version 3.  Read them carefully,
 as they tell you what this is all about, explain how to install the
 kernel, and what to do if something goes wrong. 
 
+IMPORTANT: This Kernel is under active development and so there are chances
+that this Kernel may not work completely and flawlessly on your HP Touchpad
+and/or some of the modules may be broken. 
+So, if you want to try this kernel on your HP Touchpad then please try it
+at your own RISK. I donot take any responsiblities for any damage occured. I
+will try to complete porting of this Kernel for HP Touchpad as soon as 
+possible but still there are chances that the development may get delayed
+as I will be performing the porting activity in my spare time.
+
 WHAT IS LINUX?
 
   Linux is a clone of the operating system Unix, written from scratch by
