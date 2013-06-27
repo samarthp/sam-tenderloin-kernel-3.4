@@ -352,6 +352,7 @@ obj-$(CONFIG_ARCH_MSM9615) += gpiomux-v2.o gpiomux.o
 obj-$(CONFIG_ARCH_MSM8974) += gpiomux-v2.o gpiomux.o
 obj-$(CONFIG_ARCH_MSM9625) += gpiomux-v2.o gpiomux.o
 
+obj-$(CONFIG_MACH_MSM8X60_TENDERLOIN) += a6_sbw_impl_tenderloin.o
 
 obj-$(CONFIG_MSM_SLEEP_STATS) += idle_stats.o
 obj-$(CONFIG_MSM_SLEEP_STATS_DEVICE) += idle_stats_device.o

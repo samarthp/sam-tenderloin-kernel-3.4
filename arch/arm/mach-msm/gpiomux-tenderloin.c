@@ -2553,130 +2553,298 @@ static struct msm_gpiomux_config msm8x60_system_gpio_cfgs[] __initdata = {
 };
 
 #ifdef CONFIG_A6
+static struct gpiomux_setting tenderloin_a6_tck_active_cfg = {
+    .func = GPIOMUX_FUNC_GPIO,
+    .drv = GPIOMUX_DRV_8MA,
+    .pull = GPIOMUX_PULL_NONE,
+    .dir = GPIOMUX_OUT_HIGH,
+};
 
-// Currently the suspend configuration for A6 is not used
-#define TENDERLOIN_A6_TCK_ACTIVE_CFG GPIO_OUTH_8M_PN
-#define TENDERLOIN_A6_TCK_SUSPENDED_CFG GPIO_IN_2M_PU
+static struct gpiomux_setting tenderloin_a6_tck_suspended_cfg = {
+    .func = GPIOMUX_FUNC_GPIO,
+    .drv = GPIOMUX_DRV_2MA,
+    .pull = GPIOMUX_PULL_UP,
+};
 
-#define TENDERLOIN_A6_WAKEUP_ACTIVE GPIO_OUTL_8M_PN
-#define TENDERLOIN_A6_WAKEUP_SUSPENDED_CFG GPIO_OUTL_2M_PN
+static struct gpiomux_setting tenderloin_a6_wakeup_active_cfg = {
+    .func = GPIOMUX_FUNC_GPIO,
+    .drv = GPIOMUX_DRV_8MA,
+    .pull = GPIOMUX_PULL_NONE,
+    .dir = GPIOMUX_OUT_LOW,
+};
 
-#define TENDERLOIN_A6_TDIO_ACTIVE_CFG GPIO_OUTH_8M_PU
-#define TENDERLOIN_A6_TDIO_SUSPENDED_CFG GPIO_IN_2M_PU
+static struct gpiomux_setting tenderloin_a6_wakeup_suspended_cfg = {
+    .func = GPIOMUX_FUNC_GPIO,
+    .drv = GPIOMUX_DRV_2MA,
+    .pull = GPIOMUX_PULL_NONE,
+    .dir = GPIOMUX_OUT_LOW,
+};
 
-#define TENDERLOIN_A6_MSM_IRQ_ACTIVE_CFG GPIO_IN_8M_PU
-#define TENDERLOIN_A6_MSM_IRQ_SUSPENDED_CFG GPIO_IN_2M_PU
+static struct gpiomux_setting tenderloin_a6_tdio_active_cfg = {
+    .func = GPIOMUX_FUNC_GPIO,
+    .drv = GPIOMUX_DRV_8MA,
+    .pull = GPIOMUX_PULL_UP,
+    .dir = GPIOMUX_OUT_HIGH,
+};
+
+static struct gpiomux_setting tenderloin_a6_tdio_suspended_cfg = {
+    .func = GPIOMUX_FUNC_GPIO,
+    .drv = GPIOMUX_DRV_2MA,
+    .pull = GPIOMUX_PULL_UP,
+};
+
+static struct gpiomux_setting tenderloin_a6_msm_irq_active_cfg = {
+    .func = GPIOMUX_FUNC_GPIO,
+    .drv = GPIOMUX_DRV_8MA,
+    .pull = GPIOMUX_PULL_UP,
+};
+
+static struct gpiomux_setting tenderloin_a6_msm_irq_suspended_cfg = {
+    .func = GPIOMUX_FUNC_GPIO,
+    .drv = GPIOMUX_DRV_2MA,
+    .pull = GPIOMUX_PULL_UP,
+};
 
 /* a6 */
 static struct msm_gpiomux_config msm8x60_a6_configs[] __initdata = {
-    GPIOMUX_ACT_SUSP_DEF(TENDERLOIN_A6_0_TCK, \
-            TENDERLOIN_A6_TCK_ACTIVE_CFG, TENDERLOIN_A6_TCK_SUSPENDED_CFG),
-
-    GPIOMUX_ACT_SUSP_DEF(TENDERLOIN_A6_0_WAKEUP, \
-            TENDERLOIN_A6_WAKEUP_ACTIVE, TENDERLOIN_A6_WAKEUP_SUSPENDED_CFG),
-
-    GPIOMUX_ACT_SUSP_DEF(TENDERLOIN_A6_0_TDIO, \
-            TENDERLOIN_A6_TDIO_ACTIVE_CFG, TENDERLOIN_A6_TDIO_SUSPENDED_CFG),
-
-    GPIOMUX_ACT_SUSP_DEF(TENDERLOIN_A6_0_MSM_IRQ, \
-            TENDERLOIN_A6_MSM_IRQ_ACTIVE_CFG, TENDERLOIN_A6_MSM_IRQ_SUSPENDED_CFG),
-
-    GPIOMUX_ACT_SUSP_DEF(TENDERLOIN_A6_1_TCK, \
-            TENDERLOIN_A6_TCK_ACTIVE_CFG, TENDERLOIN_A6_TCK_SUSPENDED_CFG),
-
-    GPIOMUX_ACT_SUSP_DEF(TENDERLOIN_A6_1_WAKEUP, \
-            TENDERLOIN_A6_WAKEUP_ACTIVE, TENDERLOIN_A6_WAKEUP_SUSPENDED_CFG),
-
-    GPIOMUX_ACT_SUSP_DEF(TENDERLOIN_A6_1_TDIO, \
-            TENDERLOIN_A6_TDIO_ACTIVE_CFG, TENDERLOIN_A6_TDIO_SUSPENDED_CFG),
-
-    GPIOMUX_ACT_SUSP_DEF(TENDERLOIN_A6_1_MSM_IRQ, \
-            TENDERLOIN_A6_MSM_IRQ_ACTIVE_CFG, TENDERLOIN_A6_MSM_IRQ_SUSPENDED_CFG),
+    {
+        .gpio = TENDERLOIN_A6_0_TCK,
+        .settings = {
+            [GPIOMUX_ACTIVE] = &tenderloin_a6_tck_active_cfg,
+            [GPIOMUX_SUSPENDED] = &tenderloin_a6_tck_suspended_cfg,
+        },
+    },
+    {
+        .gpio = TENDERLOIN_A6_0_WAKEUP,
+        .settings = {
+            [GPIOMUX_ACTIVE] = &tenderloin_a6_wakeup_active_cfg,
+            [GPIOMUX_SUSPENDED] = &tenderloin_a6_wakeup_suspended_cfg,
+        },
+    },
+    {
+        .gpio = TENDERLOIN_A6_0_TDIO,
+        .settings = {
+            [GPIOMUX_ACTIVE] = &tenderloin_a6_tdio_active_cfg,
+            [GPIOMUX_SUSPENDED] = &tenderloin_a6_tdio_suspended_cfg,
+        },
+    },
+    {
+        .gpio = TENDERLOIN_A6_0_MSM_IRQ,
+        .settings = {
+            [GPIOMUX_ACTIVE] = &tenderloin_a6_msm_irq_active_cfg,
+            [GPIOMUX_SUSPENDED] = &tenderloin_a6_msm_irq_suspended_cfg,
+        },
+    },
+    {
+        .gpio = TENDERLOIN_A6_1_TCK,
+        .settings = {
+            [GPIOMUX_ACTIVE] = &tenderloin_a6_tck_active_cfg,
+            [GPIOMUX_SUSPENDED] = &tenderloin_a6_tck_suspended_cfg,
+        },
+    },
+    {
+        .gpio = TENDERLOIN_A6_1_WAKEUP,
+        .settings = {
+            [GPIOMUX_ACTIVE] = &tenderloin_a6_wakeup_active_cfg,
+            [GPIOMUX_SUSPENDED] = &tenderloin_a6_wakeup_suspended_cfg,
+        },
+    },
+    {
+        .gpio = TENDERLOIN_A6_1_TDIO,
+        .settings = {
+            [GPIOMUX_ACTIVE] = &tenderloin_a6_tdio_active_cfg,
+            [GPIOMUX_SUSPENDED] = &tenderloin_a6_tdio_suspended_cfg,
+        },
+    },
+    {
+        .gpio = TENDERLOIN_A6_1_MSM_IRQ,
+        .settings = {
+            [GPIOMUX_ACTIVE] = &tenderloin_a6_msm_irq_active_cfg,
+            [GPIOMUX_SUSPENDED] = &tenderloin_a6_msm_irq_suspended_cfg,
+        },
+    },
 };
 
 /* SAM: Temporary disable 3G support */
 #if 0
 static struct msm_gpiomux_config msm8x60_a6_configs_3g[] __initdata = {
-    GPIOMUX_ACT_SUSP_DEF(TENDERLOIN_A6_0_TCK_3G, \
-            TENDERLOIN_A6_TCK_ACTIVE_CFG, TENDERLOIN_A6_TCK_SUSPENDED_CFG),
-
-    GPIOMUX_ACT_SUSP_DEF(TENDERLOIN_A6_0_WAKEUP_3G, \
-            TENDERLOIN_A6_WAKEUP_ACTIVE, TENDERLOIN_A6_WAKEUP_SUSPENDED_CFG),
-
-    GPIOMUX_ACT_SUSP_DEF(TENDERLOIN_A6_0_TDIO_3G, \
-            TENDERLOIN_A6_TDIO_ACTIVE_CFG, TENDERLOIN_A6_TDIO_SUSPENDED_CFG),
-
-    GPIOMUX_ACT_SUSP_DEF(TENDERLOIN_A6_0_MSM_IRQ_3G, \
-            TENDERLOIN_A6_MSM_IRQ_ACTIVE_CFG, TENDERLOIN_A6_MSM_IRQ_SUSPENDED_CFG),
-
-    GPIOMUX_ACT_SUSP_DEF(TENDERLOIN_A6_1_TCK_3G, \
-            TENDERLOIN_A6_TCK_ACTIVE_CFG, TENDERLOIN_A6_TCK_SUSPENDED_CFG),
-
-    GPIOMUX_ACT_SUSP_DEF(TENDERLOIN_A6_1_WAKEUP_3G, \
-            TENDERLOIN_A6_WAKEUP_ACTIVE, TENDERLOIN_A6_WAKEUP_SUSPENDED_CFG),
-
-    GPIOMUX_ACT_SUSP_DEF(TENDERLOIN_A6_1_TDIO_3G, \
-            TENDERLOIN_A6_TDIO_ACTIVE_CFG, TENDERLOIN_A6_TDIO_SUSPENDED_CFG),
-
-    GPIOMUX_ACT_SUSP_DEF(TENDERLOIN_A6_1_MSM_IRQ_3G, \
-            TENDERLOIN_A6_MSM_IRQ_ACTIVE_CFG, TENDERLOIN_A6_MSM_IRQ_SUSPENDED_CFG),
-
+    {
+        .gpio = TENDERLOIN_A6_0_TCK_3G,
+        .settings = {
+            [GPIOMUX_ACTIVE] = &tenderloin_a6_tck_active_cfg,
+            [GPIOMUX_SUSPENDED] = &tenderloin_a6_tck_suspended_cfg,
+        },
+    },
+    {
+        .gpio = TENDERLOIN_A6_0_WAKEUP_3G,
+        .settings = {
+            [GPIOMUX_ACTIVE] = &tenderloin_a6_wakeup_active_cfg,
+            [GPIOMUX_SUSPENDED] = &tenderloin_a6_wakeup_suspended_cfg,
+        },
+    },
+    {
+        .gpio = TENDERLOIN_A6_0_TDIO_3G,
+        .settings = {
+            [GPIOMUX_ACTIVE] = &tenderloin_a6_tdio_active_cfg,
+            [GPIOMUX_SUSPENDED] = &tenderloin_a6_tdio_suspended_cfg,
+        },
+    },
+    {
+        .gpio = TENDERLOIN_A6_0_MSM_IRQ_3G,
+        .settings = {
+            [GPIOMUX_ACTIVE] = &tenderloin_a6_msm_irq_active_cfg,
+            [GPIOMUX_SUSPENDED] = &tenderloin_a6_msm_irq_suspended_cfg,
+        },
+    },
+    {
+        .gpio = TENDERLOIN_A6_1_TCK_3G,
+        .settings = {
+            [GPIOMUX_ACTIVE] = &tenderloin_a6_tck_active_cfg,
+            [GPIOMUX_SUSPENDED] = &tenderloin_a6_tck_suspended_cfg,
+        },
+    },
+    {
+        .gpio = TENDERLOIN_A6_1_WAKEUP_3G,
+        .settings = {
+            [GPIOMUX_ACTIVE] = &tenderloin_a6_wakeup_active_cfg,
+            [GPIOMUX_SUSPENDED] = &tenderloin_a6_wakeup_suspended_cfg,
+        },
+    },
+    {
+        .gpio = TENDERLOIN_A6_1_TDIO_3G,
+        .settings = {
+            [GPIOMUX_ACTIVE] = &tenderloin_a6_tdio_active_cfg,
+            [GPIOMUX_SUSPENDED] = &tenderloin_a6_tdio_suspended_cfg,
+        },
+    },
+    {
+        .gpio = TENDERLOIN_A6_1_MSM_IRQ_3G,
+        .settings = {
+            [GPIOMUX_ACTIVE] = &tenderloin_a6_msm_irq_active_cfg,
+            [GPIOMUX_SUSPENDED] = &tenderloin_a6_msm_irq_suspended_cfg,
+        },
+    },
 };
 #endif
 
 static struct msm_gpiomux_config msm8x60_a6_configs_dvt [] __initdata = {
-    GPIOMUX_ACT_SUSP_DEF(TENDERLOIN_A6_0_TCK, \
-            TENDERLOIN_A6_TCK_ACTIVE_CFG, TENDERLOIN_A6_TCK_SUSPENDED_CFG),
-
-    GPIOMUX_ACT_SUSP_DEF(TENDERLOIN_A6_0_WAKEUP, \
-            TENDERLOIN_A6_WAKEUP_ACTIVE, TENDERLOIN_A6_WAKEUP_SUSPENDED_CFG),
-
-    GPIOMUX_ACT_SUSP_DEF(TENDERLOIN_A6_0_TDIO, \
-            TENDERLOIN_A6_TDIO_ACTIVE_CFG, TENDERLOIN_A6_TDIO_SUSPENDED_CFG),
-
-    GPIOMUX_ACT_SUSP_DEF(TENDERLOIN_A6_0_MSM_IRQ_DVT, \
-            TENDERLOIN_A6_MSM_IRQ_ACTIVE_CFG, TENDERLOIN_A6_MSM_IRQ_SUSPENDED_CFG),
-
-    GPIOMUX_ACT_SUSP_DEF(TENDERLOIN_A6_1_TCK, \
-            TENDERLOIN_A6_TCK_ACTIVE_CFG, TENDERLOIN_A6_TCK_SUSPENDED_CFG),
-
-    GPIOMUX_ACT_SUSP_DEF(TENDERLOIN_A6_1_WAKEUP, \
-            TENDERLOIN_A6_WAKEUP_ACTIVE, TENDERLOIN_A6_WAKEUP_SUSPENDED_CFG),
-
-    GPIOMUX_ACT_SUSP_DEF(TENDERLOIN_A6_1_TDIO, \
-            TENDERLOIN_A6_TDIO_ACTIVE_CFG, TENDERLOIN_A6_TDIO_SUSPENDED_CFG),
-
-    GPIOMUX_ACT_SUSP_DEF(TENDERLOIN_A6_1_MSM_IRQ_DVT, \
-            TENDERLOIN_A6_MSM_IRQ_ACTIVE_CFG, TENDERLOIN_A6_MSM_IRQ_SUSPENDED_CFG),
+    {
+        .gpio = TENDERLOIN_A6_0_TCK,
+        .settings = {
+            [GPIOMUX_ACTIVE] = &tenderloin_a6_tck_active_cfg,
+            [GPIOMUX_SUSPENDED] = &tenderloin_a6_tck_suspended_cfg,
+        },
+    },
+    {
+        .gpio = TENDERLOIN_A6_0_WAKEUP,
+        .settings = {
+            [GPIOMUX_ACTIVE] = &tenderloin_a6_wakeup_active_cfg,
+            [GPIOMUX_SUSPENDED] = &tenderloin_a6_wakeup_suspended_cfg,
+        },
+    },
+    {
+        .gpio = TENDERLOIN_A6_0_TDIO,
+        .settings = {
+            [GPIOMUX_ACTIVE] = &tenderloin_a6_tdio_active_cfg,
+            [GPIOMUX_SUSPENDED] = &tenderloin_a6_tdio_suspended_cfg,
+        },
+    },
+    {
+        .gpio = TENDERLOIN_A6_0_MSM_IRQ_DVT,
+        .settings = {
+            [GPIOMUX_ACTIVE] = &tenderloin_a6_msm_irq_active_cfg,
+            [GPIOMUX_SUSPENDED] = &tenderloin_a6_msm_irq_suspended_cfg,
+        },
+    },
+    {
+        .gpio = TENDERLOIN_A6_1_TCK,
+        .settings = {
+            [GPIOMUX_ACTIVE] = &tenderloin_a6_tck_active_cfg,
+            [GPIOMUX_SUSPENDED] = &tenderloin_a6_tck_suspended_cfg,
+        },
+    },
+    {
+        .gpio = TENDERLOIN_A6_1_WAKEUP,
+        .settings = {
+            [GPIOMUX_ACTIVE] = &tenderloin_a6_wakeup_active_cfg,
+            [GPIOMUX_SUSPENDED] = &tenderloin_a6_wakeup_suspended_cfg,
+        },
+    },
+    {
+        .gpio = TENDERLOIN_A6_1_TDIO,
+        .settings = {
+            [GPIOMUX_ACTIVE] = &tenderloin_a6_tdio_active_cfg,
+            [GPIOMUX_SUSPENDED] = &tenderloin_a6_tdio_suspended_cfg,
+        },
+    },
+    {
+        .gpio = TENDERLOIN_A6_1_MSM_IRQ_DVT,
+        .settings = {
+            [GPIOMUX_ACTIVE] = &tenderloin_a6_msm_irq_active_cfg,
+            [GPIOMUX_SUSPENDED] = &tenderloin_a6_msm_irq_suspended_cfg,
+        },
+    },
 };
 
 /* SAM: Temporary disable 3G support */
 #if 0
 static struct msm_gpiomux_config msm8x60_a6_configs_3g_dvt [] __initdata = {
-    GPIOMUX_ACT_SUSP_DEF(TENDERLOIN_A6_0_TCK_3G_DVT, \
-            TENDERLOIN_A6_TCK_ACTIVE_CFG, TENDERLOIN_A6_TCK_SUSPENDED_CFG),
-
-    GPIOMUX_ACT_SUSP_DEF(TENDERLOIN_A6_0_WAKEUP_3G, \
-            TENDERLOIN_A6_WAKEUP_ACTIVE, TENDERLOIN_A6_WAKEUP_SUSPENDED_CFG),
-
-    GPIOMUX_ACT_SUSP_DEF(TENDERLOIN_A6_0_TDIO_3G, \
-            TENDERLOIN_A6_TDIO_ACTIVE_CFG, TENDERLOIN_A6_TDIO_SUSPENDED_CFG),
-
-    GPIOMUX_ACT_SUSP_DEF(TENDERLOIN_A6_0_MSM_IRQ_3G_DVT, \
-            TENDERLOIN_A6_MSM_IRQ_ACTIVE_CFG, TENDERLOIN_A6_MSM_IRQ_SUSPENDED_CFG),
-
-    GPIOMUX_ACT_SUSP_DEF(TENDERLOIN_A6_1_TCK_3G, \
-            TENDERLOIN_A6_TCK_ACTIVE_CFG, TENDERLOIN_A6_TCK_SUSPENDED_CFG),
-
-    GPIOMUX_ACT_SUSP_DEF(TENDERLOIN_A6_1_WAKEUP_3G, \
-            TENDERLOIN_A6_WAKEUP_ACTIVE, TENDERLOIN_A6_WAKEUP_SUSPENDED_CFG),
-
-    GPIOMUX_ACT_SUSP_DEF(TENDERLOIN_A6_1_TDIO_3G, \
-            TENDERLOIN_A6_TDIO_ACTIVE_CFG, TENDERLOIN_A6_TDIO_SUSPENDED_CFG),
-
-    GPIOMUX_ACT_SUSP_DEF(TENDERLOIN_A6_1_MSM_IRQ_3G_DVT, \
-            TENDERLOIN_A6_MSM_IRQ_ACTIVE_CFG, TENDERLOIN_A6_MSM_IRQ_SUSPENDED_CFG),
-
+    {
+        .gpio = TENDERLOIN_A6_0_TCK_3G_DVT,
+        .settings = {
+            [GPIOMUX_ACTIVE] = &tenderloin_a6_tck_active_cfg,
+            [GPIOMUX_SUSPENDED] = &tenderloin_a6_tck_suspended_cfg,
+        },
+    },
+    {
+        .gpio = TENDERLOIN_A6_0_WAKEUP_3G,
+        .settings = {
+            [GPIOMUX_ACTIVE] = &tenderloin_a6_wakeup_active_cfg,
+            [GPIOMUX_SUSPENDED] = &tenderloin_a6_wakeup_suspended_cfg,
+        },
+    },
+    {
+        .gpio = TENDERLOIN_A6_0_TDIO_3G,
+        .settings = {
+            [GPIOMUX_ACTIVE] = &tenderloin_a6_tdio_active_cfg,
+            [GPIOMUX_SUSPENDED] = &tenderloin_a6_tdio_suspended_cfg,
+        },
+    },
+    {
+        .gpio = TENDERLOIN_A6_0_MSM_IRQ_3G_DVT,
+        .settings = {
+            [GPIOMUX_ACTIVE] = &tenderloin_a6_msm_irq_active_cfg,
+            [GPIOMUX_SUSPENDED] = &tenderloin_a6_msm_irq_suspended_cfg,
+        },
+    },
+    {
+        .gpio = TENDERLOIN_A6_1_TCK_3G_DVT,
+        .settings = {
+            [GPIOMUX_ACTIVE] = &tenderloin_a6_tck_active_cfg,
+            [GPIOMUX_SUSPENDED] = &tenderloin_a6_tck_suspended_cfg,
+        },
+    },
+    {
+        .gpio = TENDERLOIN_A6_1_WAKEUP_3G,
+        .settings = {
+            [GPIOMUX_ACTIVE] = &tenderloin_a6_wakeup_active_cfg,
+            [GPIOMUX_SUSPENDED] = &tenderloin_a6_wakeup_suspended_cfg,
+        },
+    },
+    {
+        .gpio = TENDERLOIN_A6_1_TDIO_3G,
+        .settings = {
+            [GPIOMUX_ACTIVE] = &tenderloin_a6_tdio_active_cfg,
+            [GPIOMUX_SUSPENDED] = &tenderloin_a6_tdio_suspended_cfg,
+        },
+    },
+    {
+        .gpio = TENDERLOIN_A6_1_MSM_IRQ_3G_DVT,
+        .settings = {
+            [GPIOMUX_ACTIVE] = &tenderloin_a6_msm_irq_active_cfg,
+            [GPIOMUX_SUSPENDED] = &tenderloin_a6_msm_irq_suspended_cfg,
+        },
+    },
 };
 #endif
 

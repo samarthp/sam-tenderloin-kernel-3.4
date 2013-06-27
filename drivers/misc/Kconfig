@@ -635,6 +635,11 @@ config QSEECOM
 	  Qualcomm Secure Execution Environment (QSEE) using Secure Channel
 	  Manager (SCM) interface.
 
+config HRES_COUNTER
+    tristate "High resolution counter"
+    ---help---
+      Select Y if you want to enable High resolution counter.
+
 config QFP_FUSE
 	tristate "QFPROM Fuse Read/Write support"
 	help
@@ -661,4 +666,5 @@ source "drivers/misc/ti-st/Kconfig"
 source "drivers/misc/lis3lv02d/Kconfig"
 source "drivers/misc/carma/Kconfig"
 source "drivers/misc/altera-stapl/Kconfig"
+source "drivers/misc/a6/Kconfig"
 endmenu
