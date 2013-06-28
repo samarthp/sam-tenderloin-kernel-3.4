@@ -2272,7 +2272,7 @@ static struct msm_gpiomux_config msm8x60_kbdgpio_cfgs_3g[] __initdata = {
 
 #endif
 
-#ifdef CONFIG_CHARGER_MAX8903
+#ifdef CONFIG_MAX8903B_CHARGER
 static struct gpiomux_setting max8903b_active_cfg = {
     .func = GPIOMUX_FUNC_GPIO,
     .drv = GPIOMUX_DRV_8MA,
@@ -3019,7 +3019,7 @@ tenderloin_gpiomux_cfgs[] __initdata = {
 #ifdef CONFIG_KEYBOARD_GPIO_PE
     {msm8x60_kbdgpio_cfgs, ARRAY_SIZE(msm8x60_kbdgpio_cfgs)},
 #endif
-#ifdef CONFIG_CHARGER_MAX8903
+#ifdef CONFIG_MAX8903B_CHARGER
     {msm8x60_charger_cfgs, ARRAY_SIZE(msm8x60_charger_cfgs)},
 #endif
 #ifdef CONFIG_TOUCHSCREEN_MXT1386_I2C
@@ -3072,7 +3072,7 @@ tenderloin_3g_gpiomux_cfgs[] __initdata = {
 #ifdef CONFIG_KEYBOARD_GPIO_PE
     {msm8x60_kbdgpio_cfgs_3g, ARRAY_SIZE(msm8x60_kbdgpio_cfgs)},
 #endif
-#ifdef CONFIG_CHARGER_MAX8903
+#ifdef CONFIG_MAX8903B_CHARGER
     {msm8x60_charger_cfgs_3g, ARRAY_SIZE(msm8x60_charger_cfgs_3g)},
 #endif
 #ifdef CONFIG_TOUCHSCREEN_MXT1386_I2C
@@ -3128,7 +3128,7 @@ tenderloin_dvt_gpiomux_cfgs[] __initdata = {
 #ifdef CONFIG_KEYBOARD_GPIO_PE
     {msm8x60_kbdgpio_cfgs, ARRAY_SIZE(msm8x60_kbdgpio_cfgs)},
 #endif
-#ifdef CONFIG_CHARGER_MAX8903
+#ifdef CONFIG_MAX8903B_CHARGER
     {msm8x60_charger_cfgs, ARRAY_SIZE(msm8x60_charger_cfgs)},
 #endif
 #ifdef CONFIG_TOUCHSCREEN_MXT1386_I2C
@@ -3180,7 +3180,7 @@ tenderloin_3g_dvt_gpiomux_cfgs[] __initdata = {
 #ifdef CONFIG_KEYBOARD_GPIO_PE
     {msm8x60_kbdgpio_cfgs_3g, ARRAY_SIZE(msm8x60_kbdgpio_cfgs)},
 #endif
-#ifdef CONFIG_CHARGER_MAX8903
+#ifdef CONFIG_MAX8903B_CHARGER
     {msm8x60_charger_cfgs_3g, ARRAY_SIZE(msm8x60_charger_cfgs_3g)},
 #endif
 #ifdef CONFIG_TOUCHSCREEN_MXT1386_I2C

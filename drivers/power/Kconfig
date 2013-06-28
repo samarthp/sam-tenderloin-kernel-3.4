@@ -242,6 +242,12 @@ config CHARGER_MAX8903
 	  pins based on the status of charger connections with interrupt
 	  handlers.
 
+config MAX8903B_CHARGER
+    tristate "MAXIM 8903B charger (HP Touchpad)"
+    default n
+    help
+      Say Y to enable support for the MAX8903B charger in HP Touchpad.
+
 config CHARGER_TWL4030
 	tristate "OMAP TWL4030 BCI charger driver"
 	depends on TWL4030_CORE
