@@ -635,6 +635,12 @@ config QSEECOM
 	  Qualcomm Secure Execution Environment (QSEE) using Secure Channel
 	  Manager (SCM) interface.
 
+config NDUID
+    bool "Nova Device ID"
+    default n
+    ---help---
+    This option exports the Nova Device ID to /proc/nduid.
+
 config HRES_COUNTER
     tristate "High resolution counter"
     ---help---
