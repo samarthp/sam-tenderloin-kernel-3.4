@@ -379,6 +379,9 @@ obj-$(CONFIG_MSM_CACHE_ERP) += cache_erp.o
 obj-$(CONFIG_MSM_EBI_ERP) += ebi_erp.o
 obj-$(CONFIG_MSM_CACHE_DUMP) += msm_cache_dump.o
 
+obj-$(CONFIG_MSM_UARTDM) += msm_hsuart.o
+obj-$(CONFIG_MSM_UARTDM) += msm_uart_dm.o
+
 obj-$(CONFIG_MSM_HSIC_SYSMON) += hsic_sysmon.o
 obj-$(CONFIG_MSM_HSIC_SYSMON_TEST) += hsic_sysmon_test.o
 

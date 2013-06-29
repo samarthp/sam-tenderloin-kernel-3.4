@@ -61,6 +61,7 @@ obj-$(CONFIG_TSIF) += msm_tsif.o
 msm_tsif-objs := tsif.o
 obj-$(CONFIG_TSIF_CHRDEV) += tsif_chrdev.o
 obj-$(CONFIG_TSPP) += tspp.o
+obj-$(CONFIG_HSUART)            += hsuart.o hsuart_tty.o
 obj-$(CONFIG_NDUID)     += nduid.o
 obj-$(CONFIG_HAPTIC_ISA1200)		+= isa1200.o
 obj-$(CONFIG_HRES_COUNTER)  += hres_counter.o

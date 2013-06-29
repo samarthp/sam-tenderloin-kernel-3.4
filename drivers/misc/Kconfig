@@ -635,6 +635,12 @@ config QSEECOM
 	  Qualcomm Secure Execution Environment (QSEE) using Secure Channel
 	  Manager (SCM) interface.
 
+config HSUART
+    bool "High Speed UART engine"
+    default n
+    ---help---
+      Generic HSUART engine, which calls platform specific code to facilitate High speed UART driver".
+
 config NDUID
     bool "Nova Device ID"
     default n
